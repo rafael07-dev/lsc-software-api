@@ -1,7 +1,7 @@
 package com.lsc.software.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Entity
@@ -15,7 +15,8 @@ public class Letter {
     @Column(length = 10)
     private String letter;
 
-    @OneToMany(mappedBy = "letter", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "letter", fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Word> words;
 
     public Long getId() {
