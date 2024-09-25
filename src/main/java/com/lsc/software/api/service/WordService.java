@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -53,5 +54,30 @@ public class WordService {
     public ResponseApi deleteWord(Long idWord) {
         wordRepository.deleteById(idWord);
         return new ResponseApi(200, "Word deleted");
+    }
+
+    public ResponseApi updateWord(Word word, Long idWord) {
+
+        log.info("Letter ID received: {}", word.getLetter().getId());
+
+        Optional<Word> oldWord = wordRepository.findById(idWord);
+
+        if (oldWord.isPresent()) {
+            Word newWordObj = oldWord.get();
+
+            newWordObj.setWord(word.getWord());
+
+            if (word.getLetter() != null && !Objects.equals(oldWord.get().getLetter().getId(), word.getLetter().getId())) {
+                newWordObj.setLetter(word.getLetter());
+            }
+
+            wordRepository.save(newWordObj);
+
+            return new ResponseApi(200, "Word updated");
+        }else {
+            return new ResponseApi(400, "Word not found");
+        }
+
+        //return new ResponseApi(200, "Word updated");
     }
 }

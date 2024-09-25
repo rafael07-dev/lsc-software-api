@@ -40,4 +40,9 @@ public class WordController {
     public ResponseEntity<ResponseApi> deleteWord(@PathVariable Long idWord) {
         return ResponseEntity.ok().body(wordService.deleteWord(idWord));
     }
+
+    @PutMapping("/update/{idWord}")
+    public ResponseEntity<ResponseApi> updateWord(@RequestBody Word word, @PathVariable Long idWord) {
+        return ResponseEntity.ok().body(wordService.updateWord(word, idWord));
+    }
 }
