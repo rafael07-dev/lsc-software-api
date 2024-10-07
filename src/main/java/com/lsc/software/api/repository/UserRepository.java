@@ -1,2 +1,11 @@
-package com.lsc.software.api.repository;public interface UserRepository {
+package com.lsc.software.api.repository;
+
+import com.lsc.software.api.model.UserEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+
+    Optional<UserEntity> findByUsername(String username);
 }
