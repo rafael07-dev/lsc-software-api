@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ApiLscSoftwareApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(ApiLscSoftwareApplication.class, args);
 	}
 
