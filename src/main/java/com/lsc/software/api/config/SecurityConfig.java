@@ -37,7 +37,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.POST, "/api/auth/sing-up").permitAll();
                     auth.requestMatchers("/api/users/*").hasAnyRole("ADMIN");
                     auth.requestMatchers(HttpMethod.PATCH, "/api/users/**").hasAnyRole("ADMIN");
-                    auth.requestMatchers(HttpMethod.POST, "/api/admin/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "api/admin/upload-gif/**").hasAnyRole("ADMIN");
                     auth.anyRequest().authenticated();
                 }).addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
