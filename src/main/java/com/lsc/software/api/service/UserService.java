@@ -69,8 +69,7 @@ public class UserService implements UserDetailsService {
         userEntity.setEmail(user.getEmail());
 
         if (user.getRoles() == null) {
-            user.setRoles("ROLE_USER");
-            userEntity.setRoles(user.getRoles());
+            userEntity.setRoles("ROLE_ADMIN");
         }
 
         userRepository.save(userEntity);

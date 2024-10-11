@@ -1,7 +1,7 @@
 package com.lsc.software.api.controller;
 
 import com.lsc.software.api.Dto.UserSingUp;
-import com.lsc.software.api.model.UserAuth;
+import com.lsc.software.api.Dto.UserAuth;
 import com.lsc.software.api.model.UserEntity;
 import com.lsc.software.api.repository.UserRepository;
 import com.lsc.software.api.response.ResponseApi;
