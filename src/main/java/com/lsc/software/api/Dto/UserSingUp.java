@@ -37,7 +37,9 @@ public class UserSingUp {
     @Size(min = 2, max = 20)
     private String password;
 
-    private String roles;
+    private String roles = null;
+
+    private boolean active = false;
 
     public UserSingUp() {
 
@@ -105,5 +107,13 @@ public class UserSingUp {
 
     public void setRoles(String roles) {
         this.roles = roles;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
