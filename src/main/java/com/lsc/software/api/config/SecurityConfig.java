@@ -32,9 +32,7 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((auth) -> {
-                    auth.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/api/auth/logout").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/api/auth/sing-up").permitAll();
+                    auth.requestMatchers("/api/auth/**").permitAll();
                     auth.requestMatchers("/api/users/*").hasAnyRole("ADMIN");
                     auth.requestMatchers(HttpMethod.PATCH, "/api/users/**").hasAnyRole("ADMIN");
                     auth.requestMatchers(HttpMethod.POST, "api/admin/upload-gif/**").hasAnyRole("ADMIN");
