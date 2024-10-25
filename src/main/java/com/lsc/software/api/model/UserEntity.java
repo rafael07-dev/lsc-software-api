@@ -51,6 +51,7 @@ public class UserEntity {
 
     private Date created_at;
 
+    private boolean active = false;
 
     public UserEntity() {
         this.created_at = new Date();
@@ -129,5 +130,13 @@ public class UserEntity {
 
     public void setCreated_at(Date created_at) {
         this.created_at = created_at;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
