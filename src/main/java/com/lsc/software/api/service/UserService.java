@@ -1,6 +1,5 @@
 package com.lsc.software.api.service;
 
-import com.lsc.software.api.Dto.UserSingUp;
 import com.lsc.software.api.Utils.Patcher;
 import com.lsc.software.api.model.UserEntity;
 import com.lsc.software.api.repository.UserRepository;
@@ -57,24 +56,6 @@ public class UserService implements UserDetailsService {
             user.setRoles("ROLE_USER");
         }
         return userRepository.save(user);
-    }
-
-    public ResponseApi register(UserSingUp user) {
-
-        UserEntity userEntity = new UserEntity();
-        userEntity.setFirstName(user.getFirstName());
-        userEntity.setLastName(user.getLastName());
-        userEntity.setUsername(user.getUsername());
-        userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
-        userEntity.setEmail(user.getEmail());
-
-        if (user.getRoles() == null) {
-            userEntity.setRoles("ROLE_ADMIN");
-        }
-
-        userRepository.save(userEntity);
-
-        return new ResponseApi(200, "User " + user.getFirstName() + " registered successfully");
     }
 
     public ResponseApi delete(Long id) {
