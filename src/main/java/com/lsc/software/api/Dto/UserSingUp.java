@@ -22,12 +22,6 @@ public class UserSingUp {
     @NotBlank
     @NotEmpty
     @Size(min = 2, max = 20)
-    private String username;
-
-    @NotNull
-    @NotBlank
-    @NotEmpty
-    @Size(min = 2, max = 20)
     private String email;
 
     @Email
@@ -36,22 +30,6 @@ public class UserSingUp {
     @NotEmpty
     @Size(min = 2, max = 20)
     private String password;
-
-    private String roles = null;
-
-    private boolean active = false;
-
-    public UserSingUp() {
-
-    }
-
-    public UserSingUp(Long id, String firstName, String lastName, String email, String password) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-    }
 
     public Long getId() {
         return id;
@@ -77,14 +55,6 @@ public class UserSingUp {
         this.lastName = lastName;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public @NotNull @NotBlank @NotEmpty @Size(min = 2, max = 20) String getEmail() {
         return email;
     }
@@ -101,19 +71,4 @@ public class UserSingUp {
         this.password = password;
     }
 
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 }

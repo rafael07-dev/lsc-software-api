@@ -4,4 +4,6 @@ import com.lsc.software.api.model.Giff;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface GiffRepository extends JpaRepository<Giff, Long> {
+    Giff findByWordId(Long wordId);
+    Giff findByGiffUrl(String giffUrl);
 }

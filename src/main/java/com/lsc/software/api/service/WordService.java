@@ -8,6 +8,9 @@ import com.lsc.software.api.response.ResponseApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,10 +22,12 @@ public class WordService {
     private static final Logger log = LoggerFactory.getLogger(WordService.class);
     private final WordRepository wordRepository;
     private final LetterRepository letterRepository;
+    private final GiffStorageService giffStorageService;
 
-    public WordService(WordRepository wordRepository, LetterRepository letterRepository) {
+    public WordService(WordRepository wordRepository, LetterRepository letterRepository, GiffStorageService giffStorageService) {
         this.wordRepository = wordRepository;
         this.letterRepository = letterRepository;
+        this.giffStorageService = giffStorageService;
     }
 
     public List<Word> getAllWords(String letter) {
@@ -47,8 +52,14 @@ public class WordService {
         return wordRepository.findById(id);
     }
 
-    public Word saveWord(Word word) {
+    public Word saveWord(Word word) throws IOException {
+        //giffStorageService.storeGiff(file, word.getId());
+
         return wordRepository.save(word);
+    }
+
+    public String uploadFile(Long id, MultipartFile file) throws IOException {
+        return giffStorageService.storeGiff(file, id);
     }
 
     public ResponseApi deleteWord(Long idWord) {

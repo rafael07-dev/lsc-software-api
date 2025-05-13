@@ -1,12 +1,19 @@
 package com.lsc.software.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import java.util.Date;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +32,6 @@ public class UserEntity {
     @Size(min = 2, max = 30)
     private String lastName;
 
-    @NotNull
-    @NotBlank
-    @NotEmpty
-    @Size(min = 2, max = 20)
-    private String username;
-
     @Email
     @NotNull
     @NotBlank
@@ -44,29 +45,12 @@ public class UserEntity {
     @NotEmpty
     private String password;
 
-    @NotEmpty
-    @NotBlank
-    @NotNull
-    private String roles;
+    private boolean isActive = false;
 
-    private Date created_at;
-
-    private boolean active = false;
-
-    public UserEntity() {
-        this.created_at = new Date();
-    }
-
-    public UserEntity(Long id, String firstName, String lastName, String username, String email, String password, String roles, Date created_at) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.roles = roles;
-        this.created_at = created_at;
-    }
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<String> roles = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -74,6 +58,10 @@ public class UserEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public @NotNull @NotBlank @NotEmpty @Size(min = 2, max = 30) String getFirstName() {
@@ -92,12 +80,24 @@ public class UserEntity {
         this.lastName = lastName;
     }
 
-    public @NotNull @NotBlank @NotEmpty @Size(min = 2, max = 20) String getUsername() {
-        return username;
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
     }
 
-    public void setUsername(@NotNull @NotBlank @NotEmpty @Size(min = 2, max = 20) String username) {
-        this.username = username;
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
     }
 
     public @NotNull @NotBlank @NotEmpty @Size(min = 2, max = 40) String getEmail() {
@@ -108,35 +108,29 @@ public class UserEntity {
         this.email = email;
     }
 
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
+
     public @NotNull @NotBlank @NotEmpty String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     public void setPassword(@NotNull @NotBlank @NotEmpty String password) {
         this.password = password;
     }
 
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
-    }
-
-    public Date getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 }

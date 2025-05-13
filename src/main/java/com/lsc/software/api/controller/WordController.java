@@ -4,8 +4,11 @@ import com.lsc.software.api.model.Word;
 import com.lsc.software.api.response.ResponseApi;
 import com.lsc.software.api.service.WordService;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -30,10 +33,17 @@ public class WordController {
         return ResponseEntity.ok().body(wordService.findById(idWord));
     }
 
-    @PostMapping(value = "/create", consumes = "application/json")
-    public ResponseEntity<Word> addWord(@RequestBody @Valid Word word) {
-        return ResponseEntity.created(URI.create("/api/words/" + word.getId()))
-                .body(wordService.saveWord(word));
+    @PostMapping(value = "/create")
+    public ResponseEntity<Word> addWord(@RequestBody @Valid Word word) throws IOException {
+        var savedWord = wordService.saveWord(word);
+
+        return ResponseEntity.created(URI.create("/api/words/" + savedWord.getId()))
+                .body(savedWord);
+    }
+
+    @PostMapping(value = "/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String uploadFile(@RequestParam MultipartFile file, @PathVariable Long id) throws IOException {
+        return wordService.uploadFile(id, file);
     }
 
     @DeleteMapping("/delete/{idWord}")

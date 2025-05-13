@@ -14,7 +14,7 @@ public class Giff {
     String giffUrl;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "word_id")
+    @JoinColumn(name = "word_id", unique = true, nullable = false)
     Word word;
 
     public Giff() {
@@ -43,4 +43,5 @@ public class Giff {
     public void setWord(Word word) {
         this.word = word;
     }
+
 }

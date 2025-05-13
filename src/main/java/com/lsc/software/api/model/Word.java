@@ -1,6 +1,6 @@
 package com.lsc.software.api.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,6 +18,10 @@ public class Word {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "letter_id")
     private Letter letter;
+
+    @OneToOne(mappedBy = "word", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIgnore
+    private Giff giff;
 
     public Long getId() {
         return id;
@@ -41,5 +45,13 @@ public class Word {
 
     public void setLetter(Letter letter) {
         this.letter = letter;
+    }
+
+    public Giff getGiff() {
+        return giff;
+    }
+
+    public void setGiff(Giff giff) {
+        this.giff = giff;
     }
 }

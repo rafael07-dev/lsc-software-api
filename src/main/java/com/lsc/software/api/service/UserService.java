@@ -4,16 +4,16 @@ import com.lsc.software.api.Utils.Patcher;
 import com.lsc.software.api.model.UserEntity;
 import com.lsc.software.api.repository.UserRepository;
 import com.lsc.software.api.response.ResponseApi;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
 
@@ -25,18 +25,6 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.patcher = patcher;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        UserEntity user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return User.withUsername(user.getUsername())
-                .password(user.getPassword())
-                .authorities(user.getRoles().split(","))
-                .build();
     }
 
     public List<UserEntity> getAllUsers() {
@@ -51,10 +39,6 @@ public class UserService implements UserDetailsService {
     public UserEntity save(UserEntity user) {
         String encodePassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodePassword);
-
-        if (user.getRoles() == null) {
-            user.setRoles("ROLE_USER");
-        }
         return userRepository.save(user);
     }
 
@@ -64,11 +48,20 @@ public class UserService implements UserDetailsService {
     }
 
     public UserEntity update(Long id, UserEntity newUser) {
-        UserEntity oldUser =  userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserEntity oldUser =  userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        oldUser.setUsername(newUser.getUsername());
-        oldUser.setPassword(newUser.getPassword());
-        oldUser.setRoles(newUser.getRoles());
+        oldUser.setFirstName(newUser.getFirstName());
+        oldUser.setLastName(newUser.getLastName());
+        oldUser.setEmail(newUser.getEmail());
+        oldUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+
+        Set<String> roles = newUser.getAuthorities()
+                        .stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toSet());
+
+        oldUser.setRoles(roles);
 
         userRepository.save(oldUser);
 
