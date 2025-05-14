@@ -1,10 +1,10 @@
 package com.lsc.software.api.controller;
 
 import com.lsc.software.api.model.Giff;
-import com.lsc.software.api.repository.GiffRepository;
 import com.lsc.software.api.service.GifService;
 import com.lsc.software.api.service.GiffStorageService;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,19 +19,18 @@ import java.util.Map;
 @RequestMapping("/api/gifs")
 public class GifController {
 
-    private final GiffRepository giffRepository;
     private final GifService gifService;
     private final GiffStorageService giffStorageService;
 
-    public GifController(GiffRepository giffRepository, GifService gifService, GiffStorageService giffStorageService) {
-        this.giffRepository = giffRepository;
+    public GifController(GifService gifService, GiffStorageService giffStorageService) {
         this.gifService = gifService;
         this.giffStorageService = giffStorageService;
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Giff>> getAllGifs(){
-        return ResponseEntity.ok(giffRepository.findAll());
+    public ResponseEntity<Page<Giff>> getAllGifs(@RequestParam(defaultValue = "0") int pageIndex,
+                                                 @RequestParam(defaultValue = "10") int pageSize){
+        return ResponseEntity.ok(gifService.getGifs(pageIndex, pageSize));
     }
 
     @GetMapping(value = "/{id}")

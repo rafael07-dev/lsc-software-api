@@ -4,8 +4,12 @@ import com.lsc.software.api.model.Giff;
 import com.lsc.software.api.repository.GiffRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import java.io.FileNotFoundException;
@@ -15,6 +19,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -22,22 +27,28 @@ public class GifService {
 
     private static final Logger log = LoggerFactory.getLogger(GifService.class);
     private final GiffRepository giffRepository;
-    private final GiffStorageService giffStorageService;
 
-    public GifService(GiffRepository giffRepository, GiffStorageService giffStorageService) {
+    @Value("${BASE_URL}")
+    private String BASE_URL;
+
+    public GifService(GiffRepository giffRepository) {
         this.giffRepository = giffRepository;
-        this.giffStorageService = giffStorageService;
+    }
+
+    public Page<Giff> getGifs(int pageIndex, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
+
+        return giffRepository.findAll(pageable);
     }
 
     public Giff getGiffByWordId(Long wordId) {
         Giff giff = giffRepository.findByWordId(wordId);
+         String gifUrl = giff.getGiffUrl();
 
-        if (giff != null && giff.getGiffUrl() != null) {
-            String fileName = Paths.get(giff.getGiffUrl()).getFileName().toString();
+         giff.setGiffUrl(BASE_URL + gifUrl);
 
-            giff.setGiffUrl("http://localhost:8080/gifs/" + fileName);
-        }
-        return giff;
+          return giff;
     }
 
     public Map<String, Object> getGiffById(Long id) throws MalformedURLException, FileNotFoundException {
