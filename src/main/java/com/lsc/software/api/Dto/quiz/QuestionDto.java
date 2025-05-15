@@ -11,7 +11,6 @@ public class QuestionDto {
     private String title;
     private String content;
     private LocalDateTime createdAt;
-    private String mediaUrl;
     private final List<Answer> answers = new ArrayList<>();
 
     public Long getId() {
@@ -48,13 +47,5 @@ public class QuestionDto {
 
     public List<Answer> getAnswers() {
         return answers;
-    }
-
-    public String getMediaUrl() {
-        return mediaUrl;
-    }
-
-    public void setMediaUrl(String mediaUrl) {
-        this.mediaUrl = mediaUrl;
     }
 }
