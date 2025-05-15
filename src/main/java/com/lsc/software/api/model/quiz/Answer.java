@@ -15,7 +15,7 @@ public class Answer {
     private LocalDateTime createdAt;
     private boolean isCorrect;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "question_id")
     @JsonIgnore
     private Question question;

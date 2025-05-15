@@ -20,7 +20,7 @@ public class Question {
     private String mediaType;
     private String correctAnswer;
 
-    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Answer> answers = new ArrayList<>();
 
     public Long getId() {
