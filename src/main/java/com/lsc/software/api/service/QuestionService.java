@@ -28,36 +28,41 @@ public class QuestionService {
 
     public Question save(QuestionDto question) {
 
-        var answerOptional = question.getAnswers()
+        var answer = question.getAnswers()
                 .stream()
                 .filter(Answer::isCorrect)
                 .map(Answer::getContent)
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No answer found"));
 
-        String correctAnswer = null;
-        Word word = null;
+        Word word = wordRepository.findWordByWord(answer);
 
-        if (answerOptional.isPresent()) {
-            correctAnswer = answerOptional.get();
-            word = wordRepository.findWordByWord(correctAnswer);
-
-            if (word == null){
-                throw new RuntimeException("Word not found");
-            }
+        if (word == null){
+            throw new RuntimeException("Word not found");
         }
 
         Question questionEntity = new Question();
 
-        assert word != null;
         var giff = giffRepository.findByWordId(word.getId());
+
+        if (giff == null){
+            throw new RuntimeException("Giff not found");
+        }
 
         questionEntity.setTitle(question.getTitle());
         questionEntity.setContent(question.getContent());
         questionEntity.setCreatedAt(question.getCreatedAt());
         questionEntity.setMediaUrl(giff.getGiffUrl());
         questionEntity.setMediaType("mp4");
-        questionEntity.setAnswers(question.getAnswers());
-        questionEntity.setCorrectAnswer(correctAnswer);
+        questionEntity.setCorrectAnswer(answer);
+
+        List<Answer> answers = question.getAnswers();
+
+        for (Answer a : answers) {
+            a.setQuestion(questionEntity);
+        }
+
+        questionEntity.setAnswers(answers);
 
         return questionRepository.save(questionEntity);
     }
