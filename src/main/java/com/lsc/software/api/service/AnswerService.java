@@ -20,7 +20,7 @@ public class AnswerService {
     }
 
     public List<Answer> getAnswersByQuestionId(Long questionId) {
-        return answerRepository.findByQuestionId(questionId);
+        return answerRepository.findAnswerByQuestionId(questionId);
     }
 
     public Answer saveAnswer(Long questionId, Answer answer) {
