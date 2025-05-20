@@ -34,6 +34,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @GetMapping("/authenticated")
+    public ResponseEntity<UserEntity> getCurrentUser() {
+        UserEntity user = userService.getCurrentUser();
+        return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserEntity> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(userService.findById(id));
