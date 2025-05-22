@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -37,12 +35,14 @@ public class GiffStorageService {
     }
 
     public String storeGiff(MultipartFile file, Long wordId) throws IOException {
-        String fileName = file.getOriginalFilename();
 
         Word word = wordRepository.findById(wordId)
                 .orElseThrow(()-> new IllegalArgumentException("Word not found"));
 
-        if (fileName != null && fileName.contains(".")) {
+        //we changed the original name of the file to the name of the word
+        String fileName = word.getWord() + ".mp4";
+
+        if (fileName.contains(".")) {
             String extension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
 
             if (!extension.matches("mp4|3gp|wav|gif")) {
