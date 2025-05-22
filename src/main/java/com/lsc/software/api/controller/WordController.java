@@ -1,5 +1,6 @@
 package com.lsc.software.api.controller;
 
+import com.lsc.software.api.Dto.WordDto;
 import com.lsc.software.api.model.Word;
 import com.lsc.software.api.response.ResponseApi;
 import com.lsc.software.api.service.WordService;
@@ -34,7 +35,7 @@ public class WordController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<Word> addWord(@RequestBody @Valid Word word) throws IOException {
+    public ResponseEntity<Word> addWord(@RequestBody @Valid WordDto word) {
         var savedWord = wordService.saveWord(word);
 
         return ResponseEntity.created(URI.create("/api/words/" + savedWord.getId()))
@@ -52,7 +53,7 @@ public class WordController {
     }
 
     @PutMapping("/update/{idWord}")
-    public ResponseEntity<ResponseApi> updateWord(@RequestBody Word word, @PathVariable Long idWord) {
+    public ResponseEntity<Word> updateWord(@RequestBody WordDto word, @PathVariable Long idWord) {
         return ResponseEntity.ok().body(wordService.updateWord(word, idWord));
     }
 }
