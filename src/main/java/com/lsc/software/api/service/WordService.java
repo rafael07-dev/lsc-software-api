@@ -1,5 +1,6 @@
 package com.lsc.software.api.service;
 
+import com.lsc.software.api.Dto.WordDto;
 import com.lsc.software.api.model.Letter;
 import com.lsc.software.api.model.Word;
 import com.lsc.software.api.repository.LetterRepository;
@@ -9,9 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,7 +38,7 @@ public class WordService {
         Optional<Letter> letterObj = letterRepository.findByLetter(letter);
 
         if (letterObj.isPresent()) {
-            List<Word> words = new ArrayList<>();
+            List<Word> words;
 
             words = letterObj.get().getWords();
             return words;
@@ -52,10 +51,16 @@ public class WordService {
         return wordRepository.findById(id);
     }
 
-    public Word saveWord(Word word) throws IOException {
-        //giffStorageService.storeGiff(file, word.getId());
+    public Word saveWord(WordDto word) {
+        Word newWord = new Word();
 
-        return wordRepository.save(word);
+        var letter = letterRepository.findById(word.getLetter_id())
+                .orElseThrow(() -> new IllegalArgumentException("Letter not found"));
+
+        newWord.setWord(word.getWord());
+        newWord.setLetter(letter);
+
+        return wordRepository.save(newWord);
     }
 
     public String uploadFile(Long id, MultipartFile file) throws IOException {
@@ -67,9 +72,12 @@ public class WordService {
         return new ResponseApi(200, "Word deleted");
     }
 
-    public ResponseApi updateWord(Word word, Long idWord) {
+    public Word updateWord(WordDto word, Long idWord) {
 
-        log.info("Letter ID received: {}", word.getLetter().getId());
+        log.info("Letter ID received: {}", word.getLetter_id());
+
+        var letterRequest = letterRepository.findById(word.getLetter_id())
+                .orElseThrow(() -> new IllegalArgumentException("Letter not found"));
 
         Optional<Word> oldWord = wordRepository.findById(idWord);
 
@@ -78,17 +86,13 @@ public class WordService {
 
             newWordObj.setWord(word.getWord());
 
-            if (word.getLetter() != null && !Objects.equals(oldWord.get().getLetter().getId(), word.getLetter().getId())) {
-                newWordObj.setLetter(word.getLetter());
+            if (letterRequest != null && !Objects.equals(oldWord.get().getLetter().getId(), word.getLetter_id())) {
+                newWordObj.setLetter(letterRequest);
             }
 
-            wordRepository.save(newWordObj);
-
-            return new ResponseApi(200, "Word updated");
+            return wordRepository.save(newWordObj);
         }else {
-            return new ResponseApi(400, "Word not found");
+            return null;
         }
-
-        //return new ResponseApi(200, "Word updated");
     }
 }
