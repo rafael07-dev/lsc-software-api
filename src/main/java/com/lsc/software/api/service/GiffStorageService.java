@@ -39,32 +39,73 @@ public class GiffStorageService {
         Word word = wordRepository.findById(wordId)
                 .orElseThrow(()-> new IllegalArgumentException("Word not found"));
 
+        validateFile(file);
         //we changed the original name of the file to the name of the word
         String fileName = word.getWord() + ".mp4";
 
-        if (fileName.contains(".")) {
-            String extension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+        saveFile(file, fileName);
 
-            if (!extension.matches("mp4|3gp|wav|gif")) {
-                throw new IllegalArgumentException("Invalid file extension");
-            }
-            if (!Objects.requireNonNull(file.getContentType()).equalsIgnoreCase("video/mp4")){
-                throw new IllegalArgumentException("Only video/mp4 files are supported");
-            }
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+        Giff giff = new Giff();
+
+        giff.setGiffUrl("/gifs/"+ fileName);
+        giff.setWord(word);
+
+        giffRepository.save(giff);
+
+        return giff.getGiffUrl();
+    }
+
+    public String updateGiff(MultipartFile file, Long wordId) throws IOException {
+
+        Giff gifToUpdate = giffRepository.findByWordId(wordId);
+
+        Word word = wordRepository.findById(wordId)
+                        .orElseThrow(()-> new IllegalArgumentException("Word not found"));
+
+        validateFile(file);
+
+        String fileName = word.getWord() + ".mp4";
+        saveFile(file, fileName);
+
+        gifToUpdate.setGiffUrl("/gifs/"+ fileName);
+        gifToUpdate.setWord(word);
+
+        giffRepository.save(gifToUpdate);
+
+        return gifToUpdate.getGiffUrl();
+    }
+
+    private void validateFile(MultipartFile file) {
+
+        String fileName = file.getOriginalFilename();
+
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Invalid file");
+        }
+
+        if (!fileName.contains(".")) {
+            throw new IllegalArgumentException("Invalid file");
+        }
+
+        if (!Objects.requireNonNull(file.getOriginalFilename()).endsWith(".mp4")) {
+            throw new IllegalArgumentException("Only mp4 files are supported");
+        }
+
+        if (!Objects.requireNonNull(file.getContentType()).equalsIgnoreCase("video/mp4")) {
+            throw new IllegalArgumentException("Only video/mp4 files are supported");
+        }
+    }
+
+    private void saveFile(MultipartFile file, String newFilename) throws IOException {
+
+        try {
+            Path targetLocation = this.fileStorageLocation.resolve(newFilename);
 
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-            Giff giff = new Giff();
-
-            giff.setGiffUrl("/gifs/"+ fileName);
-            giff.setWord(word);
-
-            giffRepository.save(giff);
-
-            return giff.getGiffUrl();
+        }catch (IOException e){
+            log.error("Failed to save file {}", e.getMessage());
+            throw e;
         }
-        throw new IllegalArgumentException("Invalid file");
     }
 
     public List<Giff> moveGiffToNewLocation() {
