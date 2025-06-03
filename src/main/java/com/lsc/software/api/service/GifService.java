@@ -2,6 +2,7 @@ package com.lsc.software.api.service;
 
 import com.lsc.software.api.model.Giff;
 import com.lsc.software.api.repository.GiffRepository;
+import com.lsc.software.api.repository.WordRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,6 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -27,12 +27,14 @@ public class GifService {
 
     private static final Logger log = LoggerFactory.getLogger(GifService.class);
     private final GiffRepository giffRepository;
+    private final WordRepository wordRepository;
 
     @Value("${BASE_URL}")
     private String BASE_URL;
 
-    public GifService(GiffRepository giffRepository) {
+    public GifService(GiffRepository giffRepository, WordRepository wordRepository) {
         this.giffRepository = giffRepository;
+        this.wordRepository = wordRepository;
     }
 
     public Page<Giff> getGifs(int pageIndex, int pageSize) {
@@ -49,6 +51,17 @@ public class GifService {
          giff.setGiffUrl(BASE_URL + gifUrl);
 
           return giff;
+    }
+
+    public Giff deleteGiff(Long id) {
+        Giff giff = giffRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Giff not found"));
+
+        wordRepository.deleteById(giff.getWord().getId());
+
+        giffRepository.delete(giff);
+
+        return giff;
     }
 
     public Map<String, Object> getGiffById(Long id) throws MalformedURLException, FileNotFoundException {
