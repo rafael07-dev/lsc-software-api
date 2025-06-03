@@ -56,6 +56,11 @@ public class GifController {
         return ResponseEntity.ok(gifService.updateGiff(giff, id));
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Giff> deleteGiff(@PathVariable Long id){
+        return ResponseEntity.ok(gifService.deleteGiff(id));
+    }
+
     private ResponseEntity<Resource> getResourceResponseEntity(Map<String, Object> response) {
         Resource resource = (Resource) response.get("resource");
         HttpHeaders headers = (HttpHeaders) response.get("headers");
