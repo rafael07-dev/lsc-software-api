@@ -1,5 +1,6 @@
 package com.lsc.software.api.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lsc.software.api.repository.UserRepository;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -59,4 +60,10 @@ public class ApiConfig {
 
         return authenticationProvider;
     }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
 }
