@@ -1,7 +1,9 @@
 package com.lsc.software.api.Dto.quiz;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lsc.software.api.model.quiz.Answer;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,9 @@ public class QuestionDto {
     private Long id;
     private String title;
     private String content;
-    private LocalDateTime createdAt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate createdAt;
     private final List<Answer> answers = new ArrayList<>();
 
     public Long getId() {
@@ -37,11 +41,11 @@ public class QuestionDto {
         this.content = content;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 
