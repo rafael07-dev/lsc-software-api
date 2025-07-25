@@ -1,8 +1,6 @@
 package com.lsc.software.api.model.quiz;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +13,6 @@ public class Question {
 
     private String title;
     private String content;
-    private LocalDateTime createdAt;
     private String mediaUrl;
     private String mediaType;
     private String correctAnswer;
@@ -45,14 +42,6 @@ public class Question {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public String getMediaUrl() {
