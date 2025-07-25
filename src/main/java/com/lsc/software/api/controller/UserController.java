@@ -17,20 +17,13 @@ public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
-    private final UserRepository userRepository;
 
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userRepository = userRepository;
     }
 
     @GetMapping("/")
     public ResponseEntity<List<UserEntity>> getAllUser() {
-        UserEntity user = userRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        log.info(String.valueOf(user.getAuthorities().size()));
-
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
