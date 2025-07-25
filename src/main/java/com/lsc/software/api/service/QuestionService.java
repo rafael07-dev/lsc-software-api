@@ -51,7 +51,6 @@ public class QuestionService {
 
         questionEntity.setTitle(question.getTitle());
         questionEntity.setContent(question.getContent());
-        questionEntity.setCreatedAt(question.getCreatedAt());
         questionEntity.setMediaUrl(giff.getGiffUrl());
         questionEntity.setMediaType("mp4");
         questionEntity.setCorrectAnswer(answer);
@@ -67,7 +66,7 @@ public class QuestionService {
         return questionRepository.save(questionEntity);
     }
 
-    public List<Question> findAll() {
+    public List<Question> getAllQuestions() {
         return questionRepository.findAll();
     }
 
@@ -92,7 +91,6 @@ public class QuestionService {
 
         questionToUpdate.setTitle(question.getTitle());
         questionToUpdate.setContent(question.getContent());
-        questionToUpdate.setCreatedAt(question.getCreatedAt());
         questionToUpdate.setMediaUrl(question.getMediaUrl());
         questionToUpdate.setMediaType(question.getMediaType());
         questionToUpdate.setCorrectAnswer(correctAnswer);

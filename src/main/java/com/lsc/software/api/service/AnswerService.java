@@ -4,7 +4,7 @@ import com.lsc.software.api.model.quiz.Answer;
 import com.lsc.software.api.model.quiz.Question;
 import com.lsc.software.api.repository.AnswerRepository;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +26,6 @@ public class AnswerService {
     public Answer saveAnswer(Long questionId, Answer answer) {
         Question question = questionService.getQuestionById(questionId);
         answer.setQuestion(question);
-        answer.setCreatedAt(LocalDateTime.now());
         return answerRepository.save(answer);
     }
 
@@ -43,7 +42,6 @@ public class AnswerService {
 
         if (answerOptional.isPresent()) {
             var answerToUpdate = answerOptional.get();
-            answerToUpdate.setCreatedAt(LocalDateTime.now());
             answerToUpdate.setCorrect(answer.isCorrect());
             answerToUpdate.setQuestion(questionService.getQuestionById(questionId));
             answerToUpdate.setContent(answer.getContent());

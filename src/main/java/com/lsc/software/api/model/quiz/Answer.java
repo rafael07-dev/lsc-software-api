@@ -2,7 +2,6 @@ package com.lsc.software.api.model.quiz;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 public class Answer {
@@ -12,7 +11,7 @@ public class Answer {
     private Long id;
 
     private String content;
-    private LocalDateTime createdAt;
+
     private boolean isCorrect;
 
     @ManyToOne
@@ -34,14 +33,6 @@ public class Answer {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public boolean isCorrect() {
