@@ -20,7 +20,7 @@ public class QuestionController {
 
     @GetMapping
     public List<Question> getAllQuestions() {
-        return questionService.findAll();
+        return questionService.getAllQuestions();
     }
 
     @GetMapping("/{id}")
