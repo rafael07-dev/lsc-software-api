@@ -120,6 +120,10 @@ public class UserEntity implements UserDetails {
         this.roles = roles;
     }
 
+    public Set<String> getRoles() {
+        return roles;
+    }
+
     public @NotNull @NotBlank @NotEmpty String getPassword() {
         return password;
     }
